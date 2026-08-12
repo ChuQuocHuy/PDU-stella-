@@ -467,27 +467,9 @@ export function WalletApp() {
           </span>
         </a>
 
-        <nav className="header-nav" aria-label="Điều hướng chính">
-          <a href="#wallet-workspace">Ví của bạn</a>
-          <a
-            href={`https://lab.stellar.org/r/testnet/contract/${CONTRACT_ID}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Contract
-          </a>
-          <a
-            href="https://github.com/ChuQuocHuy/PDU-stella-"
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub
-          </a>
-        </nav>
-
         <div className="header-actions">
           <span className="network-pill">
-            <span className="status-dot" /> Testnet live
+            <span className="status-dot" /> Testnet
           </span>
           <button
             className="wallet-button"
@@ -502,81 +484,17 @@ export function WalletApp() {
       </header>
 
       <section className="hero" id="top">
-        <div className="hero-copy">
-          <div className="eyebrow">
-            <ShieldCheck size={15} /> Non-custodial · Powered by Soroban
-          </div>
-          <h1>
-            Ví Stellar rõ từng giao dịch.
-            <span> Gọn trong một màn hình.</span>
-          </h1>
-          <p>
-            Theo dõi và điều khiển ledger số dư nội bộ trên Stellar Testnet.
-            Mọi thao tác ghi đều được mô phỏng trước và chỉ thực thi khi chính
-            bạn ký bằng Freighter.
-          </p>
-          <div className="hero-actions">
-            <a className="hero-primary" href="#wallet-workspace">
-              Mở workspace <ChevronRight size={17} />
-            </a>
-            <a
-              className="hero-secondary"
-              href={`https://lab.stellar.org/r/testnet/contract/${CONTRACT_ID}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Xem trên Stellar Lab <ExternalLink size={15} />
-            </a>
-          </div>
-          <div className="proof-row" aria-label="Thông tin dự án">
-            <div>
-              <strong>5</strong>
-              <span>Contract methods</span>
-            </div>
-            <div>
-              <strong>10/10</strong>
-              <span>Rust tests đạt</span>
-            </div>
-            <div>
-              <strong>0</strong>
-              <span>Secret key được lưu</span>
-            </div>
-          </div>
+        <div className="eyebrow">
+          <ShieldCheck size={15} /> Smart contract viết bằng Rust · Soroban
         </div>
-
-        <div className="hero-visual" aria-hidden="true">
-          <div className="orbit orbit-one" />
-          <div className="orbit orbit-two" />
-          <div className="orbit-dot dot-one" />
-          <div className="orbit-dot dot-two" />
-          <div className="preview-card">
-            <div className="preview-top">
-              <span className="preview-mark">
-                <Sparkles size={18} />
-              </span>
-              <span className="preview-live">
-                <span /> CONTRACT LIVE
-              </span>
-            </div>
-            <span className="preview-label">INTERNAL LEDGER</span>
-            <strong className="preview-balance">
-              12,500 <small>units</small>
-            </strong>
-            <div className="preview-flow">
-              <span className="flow-source">GCRK…22CK</span>
-              <span className="flow-line" />
-              <span className="flow-node">S</span>
-              <span className="flow-line active" />
-              <span className="flow-source">GCQ3…9R2A</span>
-            </div>
-            <div className="preview-bottom">
-              <span>
-                <CheckCircle2 size={14} /> require_auth()
-              </span>
-              <strong>+1,000</strong>
-            </div>
-          </div>
-        </div>
+        <h1>
+          Ví Stellar, đủ nhỏ để hiểu.
+          <span> Đủ thật để chạy.</span>
+        </h1>
+        <p>
+          Quản lý một ledger số dư nội bộ trên Stellar Testnet. Mọi thao tác ghi
+          đều yêu cầu chính chủ ký bằng Freighter.
+        </p>
       </section>
 
       <section className="mode-bar" aria-label="Chọn môi trường">
@@ -629,11 +547,10 @@ export function WalletApp() {
         </div>
       )}
 
-      <section className="wallet-grid" id="wallet-workspace">
+      <section className="wallet-grid">
         <article className="balance-card">
-          <div className="balance-glow" />
           <div className="balance-topline">
-            <span>{mode === "demo" ? "DEMO BALANCE" : "CONTRACT BALANCE"}</span>
+            <span>{mode === "demo" ? "SỐ DƯ DEMO" : "SỐ DƯ CONTRACT"}</span>
             <button
               type="button"
               onClick={() => setShowBalance((value) => !value)}
@@ -668,14 +585,9 @@ export function WalletApp() {
             <span>
               <LockKeyhole size={15} /> require_auth()
             </span>
-            <a
-              href={`https://lab.stellar.org/r/testnet/contract/${CONTRACT_ID}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {mode === "demo" ? "Demo local" : walletNetwork || "Testnet"}
-              <ExternalLink size={12} />
-            </a>
+            <span>
+              {mode === "demo" ? "Thiết bị này" : walletNetwork || "Testnet"}
+            </span>
           </div>
         </article>
 
@@ -769,13 +681,6 @@ export function WalletApp() {
                   Tối đa
                 </button>
               )}
-            </div>
-
-            <div className="transaction-hint">
-              <span>Phí mạng</span>
-              <strong>
-                {mode === "demo" ? "0 · Chế độ Demo" : "Tính khi mô phỏng"}
-              </strong>
             </div>
 
             <button className="primary-action" type="submit" disabled={busy}>
@@ -872,9 +777,8 @@ export function WalletApp() {
                         {formatUnits(BigInt(item.amount))}
                       </strong>
                       <span>
-                        <span className={`activity-status ${item.status}`}>
-                          {item.status === "success" ? "Thành công" : "Thất bại"}
-                        </span>
+                        {item.status === "success" ? "Thành công" : "Thất bại"}
+                        {" · "}
                         {formatTime(item.timestamp)}
                       </span>
                     </div>
@@ -907,11 +811,11 @@ export function WalletApp() {
             </li>
           </ul>
           <a
-            href="https://github.com/ChuQuocHuy/PDU-stella-"
+            href="https://github.com/minhbear/stellar-notes-dapp"
             target="_blank"
             rel="noreferrer"
           >
-            <Code2 size={16} /> Xem mã nguồn dự án
+            <Code2 size={16} /> Xem dự án tham khảo
           </a>
         </aside>
       </section>

@@ -19,9 +19,9 @@ export const metadata: Metadata = {
     locale: "vi_VN",
     images: [
       {
-        url: "/og.png",
+        url: "/stellar-mini-wallet-og.png",
         width: 1733,
-        height: 908,
+        height: 909,
         alt: "Stellar Mini Wallet — ledger tối giản trên Soroban",
       },
     ],
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Stellar Mini Wallet",
     description: "Mini DApp Rust và Soroban trên Stellar Testnet.",
-    images: ["/og.png"],
+    images: ["/stellar-mini-wallet-og.png"],
   },
 };
 
