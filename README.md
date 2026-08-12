@@ -58,7 +58,60 @@ PDU-stella-/
 - [Node.js](https://nodejs.org/) phiên bản 22.13 trở lên
 - Freighter extension nếu muốn sử dụng Testnet
 
-### 2. Tải và chạy
+### 2. Chạy trên Windows bằng CMD
+
+#### Lần đầu tải và chạy dự án
+
+Mở **Command Prompt (CMD)** rồi chạy lần lượt từng lệnh:
+
+```cmd
+cd /d "%USERPROFILE%"
+git clone https://github.com/ChuQuocHuy/PDU-stella-.git
+cd PDU-stella-
+dir package.json
+npm install
+npm run dev
+```
+
+Lệnh `dir package.json` dùng để kiểm tra CMD đang đứng đúng thư mục dự án. Nếu
+thấy file `package.json` trong kết quả thì mới tiếp tục chạy `npm install` và
+`npm run dev`.
+
+#### Những lần chạy sau
+
+Nếu đã tải dự án và cài thư viện, chỉ cần mở CMD rồi chạy:
+
+```cmd
+cd /d "%USERPROFILE%\PDU-stella-"
+npm run dev
+```
+
+Nếu đã lưu dự án ở vị trí khác, hãy thay đường dẫn trên bằng đường dẫn thật tới
+thư mục dự án, ví dụ:
+
+```cmd
+cd /d "D:\HocTap\PDU-stella-"
+npm run dev
+```
+
+Giữ cửa sổ CMD mở trong lúc sử dụng website. Mở đúng URL mà terminal hiển thị,
+thường là `http://localhost:3000` hoặc một cổng localhost khác. Nhấn `Ctrl+C`
+trong CMD để dừng website.
+
+#### Sửa lỗi `ENOENT: Could not read package.json`
+
+Lỗi này có nghĩa là CMD đang đứng sai thư mục. Không chạy `npm install` hoặc
+`npm run dev` tại `C:\Users\ten-cua-ban` nếu ở đó không có `package.json`.
+Hãy chuyển vào thư mục dự án rồi kiểm tra lại:
+
+```cmd
+cd /d "C:\duong-dan-thuc-te\PDU-stella-"
+dir package.json
+npm install
+npm run dev
+```
+
+### 3. Chạy trên macOS hoặc Linux
 
 ```bash
 git clone https://github.com/ChuQuocHuy/PDU-stella-.git
@@ -67,16 +120,13 @@ npm install
 npm run dev
 ```
 
-Mở URL được terminal hiển thị, thường là `http://localhost:3000` hoặc một cổng
-localhost khác.
-
-### 3. Thử chế độ Demo
+### 4. Thử chế độ Demo
 
 1. Chọn **Demo cục bộ**.
 2. Thử nạp `100`, rút một phần hoặc chuyển cho `demo:bob`.
 3. Demo lưu trạng thái trong trình duyệt và không tạo giao dịch blockchain.
 
-### 4. Thử Stellar Testnet
+### 5. Thử Stellar Testnet
 
 1. Cài Freighter.
 2. Trong Freighter, chọn mạng **Test SDF Network**.
