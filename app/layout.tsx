@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://stellar-mini-wallet.local"),
+  metadataBase: new URL(
+    "https://stellar-mini-wallet-vn.model-potions-0vna2x.chatgpt.site",
+  ),
   title: {
     default: "Stellar Mini Wallet",
     template: "%s · Stellar Mini Wallet",
