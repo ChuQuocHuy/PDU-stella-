@@ -1,160 +1,241 @@
-# Stellar Mini Wallet
+# Stellar Mini Wallet DApp
 
-Mini DApp theo mô hình **ledger nội bộ** trên Soroban. Mỗi địa chỉ Stellar có
-một số dư kiểu `i128` trong Persistent Storage và có thể:
+Mini Wallet là một dự án học tập xây dựng trên **Stellar Soroban**. Dự án gồm
+smart contract Rust và giao diện web cho phép người dùng xem, nạp, rút và chuyển
+số dư ledger nội bộ bằng ví Freighter trên Stellar Testnet.
 
-- xem số dư bằng `get_balance`;
-- ghi tăng số dư bằng `deposit`;
-- ghi giảm số dư bằng `withdraw`;
-- chuyển số dư nội bộ bằng `transfer`.
+> Lưu ý: số dư trong dự án là **đơn vị ledger nội bộ**, không phải XLM hoặc token
+> có giá trị. Chỉ sử dụng Testnet để học tập và kiểm thử.
 
-> Đây là project học tập trên Stellar Testnet. “Đơn vị” trong ví là số liệu
-> ledger của contract, **không phải XLM hay token có giá trị**. `deposit` không
-> nạp tài sản thật và `withdraw` không rút XLM.
+## Liên kết nhanh
 
-## Những phần đã có
+- Repository: <https://github.com/ChuQuocHuy/PDU-stella->
+- Contract trên Stellar Lab: <https://lab.stellar.org/r/testnet/contract/CDVPU65FF3G7ZRSURELKUITCBQ2ZTES3NH5CO4W5V6N5U2NBURXJ6CXC>
+- Bản web đã triển khai: <https://stellar-mini-wallet-vn.model-potions-0vna2x.chatgpt.site/>
+- Hướng dẫn riêng cho Soroban Studio: [SOROBAN_STUDIO.md](./SOROBAN_STUDIO.md)
 
-- Smart contract Rust/Soroban SDK 26, build ra WASM tối ưu.
-- `require_auth()` cho mọi thao tác ghi.
-- 4 lỗi có kiểu: `InvalidAmount`, `InsufficientBalance`, `SameAddress`,
-  `Overflow`.
-- Typed event cho `deposit`, `withdraw`, `transfer`.
-- Persistent Storage và cơ chế bump TTL 30 ngày khi đọc/ghi entry đang hoạt động.
-- 10 unit test cho happy path, lỗi, auth, rollback, overflow, event và TTL.
-- TypeScript client được sinh trực tiếp từ ABI của WASM.
-- Frontend tiếng Việt, responsive, có Freighter và hai chế độ:
-  - **Demo cục bộ**: thử ngay, lưu dữ liệu trong trình duyệt, không gọi blockchain.
-- **Stellar Testnet**: gọi contract đã deploy và ký bằng Freighter.
-
-Contract Testnet hiện tại:
+Contract ID trên Testnet:
 
 ```text
 CDVPU65FF3G7ZRSURELKUITCBQ2ZTES3NH5CO4W5V6N5U2NBURXJ6CXC
 ```
 
-## Cấu trúc
+## Chức năng
+
+- `ping()` — kiểm tra contract đang hoạt động.
+- `get_balance(user)` — xem số dư nội bộ của một địa chỉ.
+- `deposit(user, amount)` — tăng số dư của người ký.
+- `withdraw(user, amount)` — giảm số dư của người ký.
+- `transfer(from, to, amount)` — chuyển số dư giữa hai địa chỉ.
+- Xác thực mọi thao tác ghi bằng `require_auth()`.
+- Phát typed event cho `deposit`, `withdraw` và `transfer`.
+- Persistent Storage với cơ chế gia hạn TTL.
+- Bốn lỗi contract rõ ràng: `InvalidAmount`, `InsufficientBalance`,
+  `SameAddress`, `Overflow`.
+- Chế độ Demo cục bộ để thử giao diện mà không cần blockchain.
+- Chế độ Stellar Testnet kết nối và ký bằng Freighter.
+
+## Cấu trúc dự án
 
 ```text
-stellar-mini-wallet/
-├── app/                         # Frontend React/vinext
-├── contracts/mini_wallet/       # Smart contract Rust và unit test
-├── packages/mini-wallet-client/ # TypeScript bindings sinh từ WASM
-├── tests/                       # Kiểm tra server-rendered frontend
-├── .env.example
-├── Cargo.toml
-└── package.json
+PDU-stella-/
+├── app/                          # Giao diện React/vinext
+├── contracts/mini_wallet/        # Smart contract Rust và unit tests
+├── packages/mini-wallet-client/  # TypeScript bindings sinh từ contract
+├── public/                       # Tài nguyên giao diện
+├── tests/                        # Frontend render tests
+├── mini_wallet.wasm              # WASM đã build sẵn cho Soroban
+├── Cargo.toml                    # Rust workspace
+├── package.json                  # Lệnh chạy frontend và kiểm thử
+└── SOROBAN_STUDIO.md             # Hướng dẫn Soroban Studio
 ```
 
-## Yêu cầu môi trường
+## Cách chạy nhanh giao diện
 
-- Node.js 22.13 trở lên
-- Rust và target `wasm32v1-none`
-- Stellar CLI
-- Freighter extension nếu muốn ký giao dịch Testnet
+### 1. Yêu cầu
 
-```powershell
-rustup target add wasm32v1-none
-stellar --version
-```
+- [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/) phiên bản 22.13 trở lên
+- Freighter extension nếu muốn sử dụng Testnet
 
-## Chạy Demo ngay
+### 2. Tải và chạy
 
-```powershell
+```bash
+git clone https://github.com/ChuQuocHuy/PDU-stella-.git
+cd PDU-stella-
 npm install
 npm run dev
 ```
 
-Mở địa chỉ hiện trong terminal. Chế độ **Demo cục bộ** được chọn sẵn. Bạn có thể
-nạp, rút, chuyển cho `demo:bob`, xem lịch sử và dùng nút “Đặt lại Demo”.
+Mở URL được terminal hiển thị, thường là `http://localhost:3000` hoặc một cổng
+localhost khác.
 
-## Kiểm thử và build
+### 3. Thử chế độ Demo
 
-```powershell
-# 10 unit test smart contract
-npm run contract:test
+1. Chọn **Demo cục bộ**.
+2. Thử nạp `100`, rút một phần hoặc chuyển cho `demo:bob`.
+3. Demo lưu trạng thái trong trình duyệt và không tạo giao dịch blockchain.
 
-# Lint frontend
-npm run lint
+### 4. Thử Stellar Testnet
 
-# Toàn bộ contract test + production build + render test
-npm test
+1. Cài Freighter.
+2. Trong Freighter, chọn mạng **Test SDF Network**.
+3. Cấp một ít Testnet XLM bằng Friendbot nếu tài khoản chưa được fund.
+4. Trên giao diện, chọn **Stellar Testnet**.
+5. Bấm **Kết nối Freighter** và xác nhận quyền truy cập.
+6. Nhập số lượng rồi nạp, rút hoặc chuyển.
+7. Kiểm tra nội dung giao dịch và xác nhận chữ ký trong Freighter.
 
-# Một lệnh kiểm tra đầy đủ
+DApp không yêu cầu và không đọc secret key. Khóa luôn được quản lý bởi
+Freighter.
+
+## Chạy kiểm thử
+
+Sau khi `npm install`, chạy toàn bộ lint, contract tests, frontend build và
+render tests:
+
+```bash
 npm run verify
 ```
 
-Build riêng WASM và sinh lại TypeScript client:
+Hoặc chạy riêng từng phần:
 
-```powershell
-npm run contract:build
-npm run bindings
-npm run build:client
+```bash
+npm run lint
+npm run contract:test
+npm test
 ```
 
-WASM nằm tại:
+Kết quả hiện tại:
+
+- 10/10 smart-contract unit tests đạt.
+- 2/2 frontend render tests đạt.
+- Production build thành công.
+
+## Build smart contract trên máy
+
+### Yêu cầu bổ sung
+
+- Rust toolchain
+- Stellar CLI
+- Rust target `wasm32v1-none`
+
+```bash
+rustup target add wasm32v1-none
+stellar --version
+```
+
+Build và kiểm thử:
+
+```bash
+cargo test --locked
+stellar contract build
+```
+
+WASM mới sẽ nằm tại:
 
 ```text
 target/wasm32v1-none/release/mini_wallet.wasm
 ```
 
-## Dùng contract Testnet đã deploy
+Sinh lại TypeScript bindings sau khi thay đổi contract:
 
-Frontend đã có sẵn Contract ID Testnet ở trên nên bạn chỉ cần chọn tab **Stellar
-Testnet**, kết nối Freighter và đảm bảo Freighter đang ở mạng Testnet. Biến môi
-trường chỉ cần thiết khi bạn muốn trỏ frontend sang một lần deploy khác.
+```bash
+npm run bindings
+npm run build:client
+```
 
-## Tự deploy một bản Testnet mới
+## Tự deploy contract mới lên Testnet
 
-Tạo/fund một identity Testnet bằng Stellar CLI hoặc dùng identity Testnet bạn đã
-có. Không commit secret key vào Git.
+Không cần deploy lại nếu chỉ muốn thử project: frontend đang sử dụng Contract
+ID Testnet có sẵn ở đầu README.
+
+Nếu bạn đã sửa mã Rust và muốn deploy một contract mới:
+
+```bash
+stellar keys generate mini-wallet-deployer --network testnet --fund
+stellar contract build
+stellar contract deploy \
+  --wasm target/wasm32v1-none/release/mini_wallet.wasm \
+  --source mini-wallet-deployer \
+  --network testnet
+```
+
+Trên Windows PowerShell, lệnh deploy có thể viết như sau:
 
 ```powershell
-stellar keys generate mini-wallet-deployer --network testnet --fund
-
 stellar contract deploy `
-  --wasm target/wasm32v1-none/release/mini_wallet.wasm `
+  --wasm target\wasm32v1-none\release\mini_wallet.wasm `
   --source mini-wallet-deployer `
   --network testnet
 ```
 
-Lệnh deploy trả về một Contract ID bắt đầu bằng `C`. Sao chép file cấu hình:
+Sao chép file cấu hình và thay Contract ID vừa nhận:
 
 ```powershell
 Copy-Item .env.example .env.local
 ```
-
-Điền Contract ID:
 
 ```dotenv
 NEXT_PUBLIC_MINI_WALLET_CONTRACT_ID=C...
 NEXT_PUBLIC_STELLAR_RPC_URL=https://soroban-testnet.stellar.org
 ```
 
-Sau đó chạy lại `npm run dev`, mở tab **Stellar Testnet**, kết nối Freighter và
-đảm bảo Freighter đang ở mạng Testnet.
+Khởi động lại frontend sau khi thay đổi biến môi trường.
 
-## Luồng giao dịch Testnet
+## Mở project trong Soroban Studio
 
-1. Frontend tạo lời gọi bằng client sinh từ ABI.
-2. Stellar RPC mô phỏng giao dịch và trả footprint/fee.
-3. Freighter hiển thị yêu cầu ký; DApp không đọc secret key.
-4. SDK gửi giao dịch đã ký và chờ ledger xác nhận.
-5. Frontend cập nhật số dư trả về và liên kết transaction hash đến Stellar Expert.
+Soroban Studio là công cụ tùy chọn; GitHub và Stellar CLI vẫn hoạt động độc lập
+nếu terminal của Studio gặp lỗi.
 
-## Quy tắc contract
+1. Mở <https://soroban.studio/>.
+2. Chọn **Create Project → Clone from GitHub**.
+3. Nhập `https://github.com/ChuQuocHuy/PDU-stella-.git`.
+4. Mở mục **Deploy** ở thanh bên.
+5. Chọn **Create & Fund Account** hoặc kết nối Freighter ở Testnet.
+6. Bấm **Build Contract**, sau đó bấm **Deploy**.
 
-- `amount` phải là số nguyên lớn hơn 0.
-- Không được rút/chuyển vượt số dư.
-- Không được chuyển cho chính mình.
-- Mọi phép cộng đều dùng `checked_add` để chặn overflow.
+Nếu Studio không nhận cấu trúc monorepo, hãy tạo **Hello World Project**, sau đó
+chép nội dung của `contracts/mini_wallet/src/lib.rs` vào file `src/lib.rs` của
+contract mẫu và build lại.
+
+File `mini_wallet.wasm` trong repository là file nhị phân đã build. Khi mở nó
+trong trình soạn thảo, màn hình trống là bình thường.
+
+### Lỗi `Failed to fetch` trong Soroban Studio
+
+Đây thường là lỗi kết nối terminal/backend của Soroban Studio, không phải lỗi
+smart contract. Có thể thử:
+
+1. Nhấn `Ctrl+Shift+R` để tải lại hoàn toàn.
+2. Tắt VPN, proxy hoặc extension chặn request cho `soroban.studio`.
+3. Thử Edge/Chrome ở cửa sổ ẩn danh hoặc một mạng Internet khác.
+4. Nếu vẫn lỗi, build bằng Stellar CLI hoặc dùng contract đã deploy trong
+   Stellar Lab.
+
+## Quy tắc của contract
+
+- `amount` phải là số nguyên lớn hơn `0`.
+- Không thể rút hoặc chuyển vượt quá số dư.
+- Không thể chuyển cho chính địa chỉ gửi.
+- Phép cộng sử dụng `checked_add` để ngăn overflow.
 - Giao dịch lỗi không thay đổi storage và không phát event thành công.
-- Entry số dư bằng 0 được xóa khỏi Persistent Storage.
+- Entry có số dư bằng `0` được xóa khỏi Persistent Storage.
 
-## Lưu ý bảo mật
+## Bảo mật
 
-- Chỉ dùng Testnet khi học và demo.
-- Không nhập hoặc gửi secret key cho website.
-- Chỉ chấp nhận cửa sổ ký do Freighter hiển thị.
-- Kiểm tra mạng Freighter là Testnet trước khi xác nhận.
-- Contract MVP là ledger minh họa, chưa phải ví lưu ký token. Bước nâng cấp tiếp
-  theo là dùng Stellar Asset Contract để `deposit`/`withdraw` chuyển token thật.
+- Chỉ sử dụng Testnet cho project này.
+- Không nhập secret key vào website hoặc commit secret key lên GitHub.
+- Luôn kiểm tra Freighter đang ở Testnet trước khi ký.
+- Chỉ xác nhận giao dịch khi địa chỉ và số lượng hiển thị đúng.
+- Đây là ledger minh họa, chưa phải ví lưu ký XLM/token thật.
+
+## Công nghệ sử dụng
+
+- Rust
+- Soroban SDK 26
+- Stellar CLI
+- TypeScript
+- React/vinext
+- Freighter API
+- Stellar Testnet
