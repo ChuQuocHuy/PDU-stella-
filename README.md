@@ -62,7 +62,7 @@ PDU-stella-/
 
 #### Lần đầu tải và chạy dự án
 
-Mở **Command Prompt (CMD)** rồi chạy lần lượt từng lệnh:
+Trong cửa sổ **CMD**, chạy đúng các lệnh sau:
 
 ```cmd
 cd /d "%USERPROFILE%"
